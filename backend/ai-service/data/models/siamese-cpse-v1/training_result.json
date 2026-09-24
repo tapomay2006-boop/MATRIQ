@@ -1,0 +1,83 @@
+{
+  "output_dir": "data/models/siamese-cpse-v1",
+  "best_epoch": 1,
+  "best_threshold": 0.8484952449798584,
+  "best_metrics": {
+    "precision": 0.9538,
+    "recall": 0.8993,
+    "f1": 0.9258,
+    "accuracy": 0.9258,
+    "hard_rejection": 0.9169,
+    "selection": 0.9214
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.18721,
+      "val_threshold": 0.8485,
+      "val_mean_positive": 0.9452,
+      "val_mean_negative": 0.3501,
+      "val_precision": 0.9538,
+      "val_recall": 0.8993,
+      "val_f1": 0.9258,
+      "val_accuracy": 0.9258,
+      "val_hard_rejection": 0.9169,
+      "selection": 0.9214
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.10508,
+      "val_threshold": 0.7959,
+      "val_mean_positive": 0.9451,
+      "val_mean_negative": 0.3132,
+      "val_precision": 0.9018,
+      "val_recall": 0.9497,
+      "val_f1": 0.9251,
+      "val_accuracy": 0.9209,
+      "val_hard_rejection": 0.8019,
+      "selection": 0.8635
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.07824,
+      "val_threshold": 0.8341,
+      "val_mean_positive": 0.9365,
+      "val_mean_negative": 0.3289,
+      "val_precision": 0.919,
+      "val_recall": 0.9265,
+      "val_f1": 0.9228,
+      "val_accuracy": 0.9202,
+      "val_hard_rejection": 0.8403,
+      "selection": 0.8815
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.05872,
+      "val_threshold": 0.8832,
+      "val_mean_positive": 0.9528,
+      "val_mean_negative": 0.4092,
+      "val_precision": 0.9316,
+      "val_recall": 0.9265,
+      "val_f1": 0.9291,
+      "val_accuracy": 0.9272,
+      "val_hard_rejection": 0.8626,
+      "selection": 0.8959
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.04707,
+      "val_threshold": 0.8609,
+      "val_mean_positive": 0.9346,
+      "val_mean_negative": 0.3786,
+      "val_precision": 0.9289,
+      "val_recall": 0.8884,
+      "val_f1": 0.9082,
+      "val_accuracy": 0.9076,
+      "val_hard_rejection": 0.8754,
+      "selection": 0.8918
+    }
+  ],
+  "train_pairs": 4358,
+  "validation_pairs": 1428,
+  "seconds": 140.1
+}

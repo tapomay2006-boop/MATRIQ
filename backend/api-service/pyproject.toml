@@ -1,0 +1,41 @@
+[project]
+name = "api-service"
+version = "0.1.0"
+description = "SIH 2026 core API service"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.118.0",
+    "uvicorn[standard]>=0.37.0",
+    "pydantic[email]>=2.11.0",
+    "pydantic-settings>=2.10.0",
+    "sqlalchemy>=2.0.43",
+    "alembic>=1.16.0",
+    "asyncpg>=0.30.0",
+    "psycopg[binary]>=3.2.0",
+    "python-jose[cryptography]>=3.5.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.20",
+    "httpx>=0.28.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.2.0",
+    "ruff>=0.14.0",
+    "mypy>=1.18.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]

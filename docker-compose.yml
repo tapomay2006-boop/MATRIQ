@@ -1,0 +1,98 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sih}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sih}
+      POSTGRES_DB: ${POSTGRES_DB:-sih}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/ai-service/scripts/init-db.sql:/docker-entrypoint-initdb.d/10-numm-ai.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sih}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-service:
+    build:
+      context: ./backend/api-service
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-sih}:${POSTGRES_PASSWORD:-sih}@postgres:5432/${POSTGRES_DB:-sih}
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      AI_SERVICE_URL: http://ai-service:8001
+    ports:
+      - "${API_SERVICE_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/api-service:/srv
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  qdrant:
+    image: qdrant/qdrant:v1.19.0
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+    volumes:
+      - qdrant-data:/qdrant/storage
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+    healthcheck:
+      # /readyz is the liveness endpoint; the image has no curl, so use the
+      # bundled binary's TCP check via a shell builtin.
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/6333 && echo ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  ai-service:
+    build:
+      context: ./backend/ai-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${AI_DB_NAME:-numm_ai}
+      DB_USER: ${POSTGRES_USER:-sih}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-sih}
+      DB_SSL: "false"
+      DB_SSLMODE: disable
+      # The LoRA weights live in the pipeline-one checkout, mounted read-only
+      # below. The adapter is 195 MB and is not copied into the image.
+      LORA_ADAPTER_DIR: /srv/data/raw/models/qwen2.5-3b-cpse-lora-v2
+      # Phase 1. OFF here: the compose image installs requirements.txt only, so
+      # torch is absent and /extract/* answers 503 with that reason. Set it to
+      # true only in an image built from requirements-ml.txt.
+      EXTRACTION_ENABLED: ${EXTRACTION_ENABLED:-false}
+      # Retrieval. Switch EMBEDDING_PROVIDER to qwen3 once the weights are in
+      # the image; /api/v1/retrieval/model/info always reports which is live.
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-deterministic}
+      EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-1024}
+      VECTOR_STORE: ${VECTOR_STORE:-qdrant}
+      QDRANT_URL: http://qdrant:6333
+      ANN_ENABLED: "true"
+    volumes:
+      - ./backend/pipeline-one:/srv/data/raw:ro
+    ports:
+      - "${AI_SERVICE_PORT:-8001}:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:${API_SERVICE_PORT:-8000}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - api-service
+
+volumes:
+  postgres_data:
+  qdrant-data:

@@ -1,0 +1,72 @@
+query,expected_pattern,expect,note
+V BELT C 120,^v belt (c 120|section c),high,brief: material + parameters
+V-BELT C-120,^v belt (c 120|section c),high,code punctuation variant
+BELT V C120,^v belt (c 120|section c),high,word order + no separator
+V BELT,^v belt (c 120|section c),possible,"brief: name only - every V belt is relevant; a family, not an article, so `possible` is the right level"
+industrial V belt C section approximately 1200 mm,^v belt (c 120|section c),high,brief: natural language
+I need a V belt used for industrial power transmission C section approximately 1200 mm length,^v belt (c 120|section c),high,brief: sentence
+V belt C section 1200mm used in conveyor drive NTPC code M-55321,^v belt (c 120|section c),high,brief: mixed (identifier stage not measured here)
+BALL BEARING 6205,6205,high,brief example
+6205 bearing,6205,high,brief: number first
+brg ball rad 6205 2rs,6205,high,abbreviations
+deep groove ball bearing 6205 2RS,6205,high,synonym
+TAPER ROLLER BEARING 32218,32218,high,
+tpr rlr brg 32218 j2/q,32218,high,abbreviations
+spherical roller bearing 22316,22316,high,
+bearing 22316 EK C3,22316,high,
+GATE VALVE 2 INCH 800#,^gate valve 2 inch 800,high,
+2 inch forged steel gate valve A105,^gate valve 2 inch 800,high,reordered
+BALL VALVE 1 INCH SS316,^ball valve 1 inch,high,
+1 inch ss316 ball valve ptfe seat,^ball valve 1 inch,high,reordered
+HEX BOLT M16 X 65,m16x65,high,
+ms hex bolt and nut m16x65mm,m16x65,high,
+high tensile bolt M24 x 100 grade 8.8,m24 x 100mm,high,
+FLANGE GASKET 100NB 150#,^flange gasket 150,high,
+spiral wound gasket 100mm NB class 150,^flange gasket 150,high,
+HYDRAULIC HOSE 1 INCH R2,^hydraulic hose 1 inch r2,high,
+hyd hose 1in r2 10 mtr with fittings,^hydraulic hose 1 inch r2,high,abbreviations
+LUBE OIL FILTER CUMMINS KTA19,kta19,high,
+oil filter kta19 cummins engine,kta19,high,reordered
+air filter element BEML dumper,^air filter element,high,
+seal kit hydraulic cylinder BEML dozer,^seal kit for hydraulic cylinder beml dozer,high,
+LED FLOOD LIGHT 200W,^led flood light 200w,high,
+200 watt led floodlight ip66,^led flood light 200w,high,paraphrase
+contactor 3 pole 63A 400V,^contactor 3 pole 400v 63a,high,
+MCB 4 POLE 63A C CURVE,^mcb 4 pole 63,high,
+submersible pump 5HP 3 phase,^submersible pump 5hp,high,
+pressure gauge 0-100 kg/cm2 150mm dial,^pressure gauge 0 100,high,
+welding electrode E7018 3.15mm,^welding electrode e7018,high,
+wire rope 16mm 6x36,^wire rope 16mm,high,
+SS tube 1/2 inch OD 1.2mm thk,^stainless steel tube 1 2 inch,high,
+servo system 68 oil 210 ltr drum,servo system 68,high,
+transformer oil EHV grade 209 ltr,^transformer oil,high,
+rubber conveyor belt 800mm EP 400/3,^rubber conveyor belt 800mm,high,
+dozer track chain 39 links,track chain assembly 39 links,high,
+industrial heater 2kw 230v,^industrial heater 2kw,high,
+o ring 87654321 komatsu,87654321,high,
+oxygen cylinder refill,^oxygen gas cylinder,high,
+DEF AUS 32,^diesel exhaust fluid,high,
+safety shoe size 9,^safety shoe,high,
+some completely unrelated material,,none,brief: nothing relevant - a confident match here is a false positive
+office chair revolving,,none,nothing relevant
+printer toner cartridge,,none,nothing relevant
+V BELT C 125,,none,near miss: only C-120 belts exist - a confident match is wrong
+V-BELT SECTION B 120,,none,near miss: wrong section
+BALL BEARING 6206,,none,near miss: only 6205 exists
+BALL BEARING 6305 2RS,,none,near miss
+TAPER ROLLER BEARING 32219,,none,near miss: only 32218 exists
+SPHERICAL ROLLER BEARING 22317,,none,near miss
+GATE VALVE 3 INCH 800# FORGED STEEL,,none,near miss: only 2 inch exists
+BALL VALVE 2 INCH SS316 1000 WOG,,none,near miss: only 1 inch exists
+HEX BOLT M16 X 80,,none,near miss: only M16x65 exists
+HIGH TENSILE BOLT M20 X 100 GRADE 8.8,,none,near miss: only M24 exists
+LED FLOOD LIGHT 100W IP66,,none,near miss: only 200W exists
+MCB 2 POLE 63 AMP C CURVE,,none,near miss: only 4 pole exists
+CONTACTOR 3 POLE 400V 40A,,none,near miss: only 63A exists
+SUBMERSIBLE PUMP 7.5HP 3 PHASE,,none,near miss: only 5HP exists
+WELDING ELECTRODE E6013 3.15MM,,none,near miss: only E7018 exists
+WIRE ROPE 20MM DIA 6X36,,none,near miss: only 16mm exists
+HYDRAULIC HOSE 3/4 INCH R2,,none,near miss: only 1 inch exists
+FLANGE GASKET 300# 100MM NB,,none,near miss: only 150# exists
+LUBE OIL FILTER CUMMINS KTA38,,none,near miss: only KTA19 exists
+PRESSURE GAUGE 0-10 KG/CM2 150MM,,none,near miss: only 0-100 exists

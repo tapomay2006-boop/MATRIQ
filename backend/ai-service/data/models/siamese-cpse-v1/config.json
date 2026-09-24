@@ -1,0 +1,54 @@
+{
+  "backbone": "sentence-transformers/all-MiniLM-L6-v2",
+  "format_version": "siamese-v1",
+  "max_length": 96,
+  "metrics": {
+    "accuracy": 0.9258,
+    "epoch": 1,
+    "f1": 0.9258,
+    "hard_rejection": 0.9169,
+    "mean_negative": 0.3501,
+    "mean_positive": 0.9452,
+    "precision": 0.9538,
+    "recall": 0.8993,
+    "selection": 0.9214
+  },
+  "pair_threshold": 0.8485,
+  "pooling": "mean",
+  "projection_dim": 256,
+  "trained_on": {
+    "corpus": "../pipeline-one/CPSE_SIH26099.csv",
+    "corpus_articles": 34,
+    "held_out_groups": [
+      "bearing ball radial 6205 2rs skf fag make only",
+      "bull dozer track chain assembly 39 links",
+      "diesel exhaust fluid diesel exhaust fluid aus 32",
+      "gate valve 2 inch 800 forged steel a105",
+      "hydraulic hose 1 inch r2 10 meters with fittings",
+      "led flood light 200w ip66 6500k cg philips",
+      "lubricating oil servo system 68 in 210 ltr drum",
+      "seal kit for hydraulic cylinder beml dozer"
+    ],
+    "pair_files": [
+      "data/training/seed_pairs.csv"
+    ],
+    "train_pairs": 4358,
+    "training": {
+      "backbone": "sentence-transformers/all-MiniLM-L6-v2",
+      "batch_size": 32,
+      "device": "cuda",
+      "epochs": 5,
+      "eval_batch_size": 128,
+      "freeze_backbone": false,
+      "head_lr_multiplier": 20.0,
+      "learning_rate": 1.5e-05,
+      "margin": 1.3,
+      "max_length": 96,
+      "output_dir": "data/models/siamese-cpse-v1",
+      "projection_dim": 256,
+      "seed": 7,
+      "weight_decay": 0.01
+    },
+    "validation_pairs": 1428
+  }
+}

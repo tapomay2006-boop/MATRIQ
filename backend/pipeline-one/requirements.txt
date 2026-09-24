@@ -1,0 +1,13 @@
+# Pipeline 1: CPSE Material Master Extraction Dependencies
+torch
+transformers
+peft
+accelerate
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic>=2.0
+pandas
+openpyxl
+httpx
+pytest

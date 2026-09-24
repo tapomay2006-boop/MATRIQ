@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPSE Material Master Extraction & Review Studio | Pipeline 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation / System Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo">CP</div>
+      <div>
+        <h1 class="brand-title">CPSE Material Master Studio</h1>
+        <p class="brand-subtitle">Pipeline 1 · AI Standardization Engine</p>
+      </div>
+    </div>
+
+    <div class="system-status-pills">
+      <div class="status-pill active" title="Strict fine-tuned model without external fallbacks">
+        <span class="status-dot"></span>
+        <span>Model: Qwen2.5-3B-LoRA-v2</span>
+      </div>
+      <div class="status-pill" id="deviceStatusPill">
+        <span>Device: <strong id="deviceText">Checking...</strong></span>
+      </div>
+      <div class="status-pill">
+        <span>GPU Guard: <strong style="color: #34d399;">Active (Low VRAM)</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="main-container">
+
+    <!-- Input Mode Panel -->
+    <section class="glass-card">
+      <div class="tab-header">
+        <button class="tab-btn active" id="tabTextBtn" onclick="switchTab('text')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Single ERP Text
+        </button>
+        <button class="tab-btn" id="tabCsvBtn" onclick="switchTab('csv')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          Batch CSV / Excel Upload
+        </button>
+      </div>
+
+      <!-- Tab 1: Single ERP Text -->
+      <div id="textInputSection">
+        <div class="samples-bar">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Quick Load Samples:</span>
+          <button class="sample-chip" onclick="loadSample(1)">HEC Ball Valve (6219 NOS)</button>
+          <button class="sample-chip" onclick="loadSample(2)">ONGC Lube Oil Filter (13751 NOS)</button>
+          <button class="sample-chip" onclick="loadSample(3)">NTPC Safety Shoe Leather (435 PAIR)</button>
+        </div>
+        <div class="form-group">
+          <label for="rawTextInput">Un-delimited Raw ERP / Catalog String</label>
+          <textarea id="rawTextInput" placeholder="Paste unformatted catalog text here, e.g.: HEC BALL VALVE 1_INCH SS316 1000 WOG PTFESEAT BHEL-868460 6219 NOS CAT-438 AUDCO Dim: 226MM"></textarea>
+        </div>
+        <button class="btn btn-primary" id="btnExtractSingle" onclick="handleExtractSingle()">
+          <span>⚡ Extract Structured Attributes</span>
+        </button>
+      </div>
+
+      <!-- Tab 2: CSV Upload -->
+      <div id="csvInputSection" style="display: none;">
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('csvFileInput').click()">
+          <div class="dropzone-icon">📁</div>
+          <h3 style="font-size: 1rem; margin-bottom: 0.35rem;">Click to browse or drag & drop CSV / Excel</h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary);" id="selectedFileName">Supports .csv, .xlsx, .xls</p>
+          <input type="file" id="csvFileInput" accept=".csv,.xlsx,.xls" style="display: none;" onchange="handleFileSelected(event)">
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+          <div class="form-group" style="flex: 1; min-width: 240px;">
+            <label for="columnSelect">Target Text Column</label>
+            <input type="text" id="columnSelect" placeholder="Leave empty for auto-detection (RAW_CATALOG_TEXT, Long Text, etc.)">
+          </div>
+          <div class="form-group" style="width: 140px;">
+            <label for="maxRowsInput">Max Rows</label>
+            <input type="number" id="maxRowsInput" value="50" min="1" max="1000">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btnExtractCsv" onclick="handleExtractCsv()">
+          <span>🚀 Process CSV Batch</span>
+        </button>
+
+        <div class="progress-bar-container" id="progressBarContainer">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Review Studio Table Panel -->
+    <section class="glass-card" id="reviewStudioSection">
+      <div class="review-header">
+        <div class="session-info">
+          <h2 style="font-size: 1.15rem; font-weight: 700;">Material Master Review Grid</h2>
+          <span class="badge badge-blue" id="sessionBadge">No Active Session</span>
+          <span class="badge badge-green" id="recordCountBadge">0 Records</span>
+          <span class="badge badge-amber" id="modifiedCountBadge">0 Edited</span>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="text" id="filterInput" placeholder="Filter records..." style="width: 220px; padding: 0.45rem 0.8rem; font-size: 0.8rem;" oninput="filterRecords(this.value)">
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="exportCurrentJSON()">⬇ JSON</button>
+          <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="exportCurrentCSV()">⬇ CSV</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 0.75rem; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+        <span>💡 <strong>Tip:</strong> Click any cell in the table below to edit and correct LLM predictions before sending to the next pipeline.</span>
+      </div>
+
+      <!-- Data Table -->
+      <div class="table-responsive">
+        <table class="data-table" id="recordsTable">
+          <thead>
+            <tr>
+              <th style="width: 40px;">#</th>
+              <th>Company</th>
+              <th style="min-width: 220px;">Item Description (Raw)</th>
+              <th>Legacy Ref</th>
+              <th>Quantity</th>
+              <th>UOM</th>
+              <th>Part No / OEM</th>
+              <th>Make / Brand</th>
+              <th style="min-width: 180px;">Specs / Dimensions</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="recordsTableBody">
+            <tr>
+              <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+                No extraction records yet. Paste single text above or upload a CSV to begin review.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Downstream Pipeline Forwarder Panel -->
+    <section class="glass-card forward-card" id="forwardSection">
+      <div>
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem;">Downstream Pipeline Dispatch</h3>
+        <p style="font-size: 0.8rem; color: var(--text-secondary);">
+          Confirm reviewed data, archive verified JSON/CSV, and forward payload to Pipeline 2.
+        </p>
+      </div>
+
+      <div class="forward-inputs">
+        <input type="text" id="targetUrlInput" placeholder="Webhook URL (e.g. http://localhost:8000/api/v1/materials/ingest)" value="http://localhost:8000/api/v1/materials/ingest">
+        <button class="btn btn-success" id="btnForward" onclick="handleForwardPipeline()" disabled>
+          <span>🚀 Send to Next Pipeline</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Alerts Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

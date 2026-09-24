@@ -1,0 +1,18 @@
+# The two models this service can run, both optional, both off by default.
+#
+#   EXTRACTION_ENABLED=true      Qwen2.5-3B + qwen2.5-3b-cpse-lora-v2 (Phase 1)
+#   EMBEDDING_PROVIDER=qwen3     Qwen3-Embedding-0.6B (the vector)
+#
+# Together this is several GB of wheels and, with a GPU, about 2.0 GB of VRAM
+# for the 4-bit adapter plus whatever the embedding model needs. The service
+# runs, demos and passes every test without any of it: extraction answers 503
+# and the embedding provider falls back to the seeded hash, and both say so.
+-r requirements.txt
+torch>=2.4.0
+transformers>=4.51.0
+peft>=0.13.0
+accelerate>=1.0.0
+
+# 4-bit NF4 quantisation, which is what keeps the adapter inside ~2 GB of VRAM.
+# CUDA only; on CPU the engine falls back to bfloat16 and does not need it.
+bitsandbytes>=0.44.0; platform_system != "Darwin"

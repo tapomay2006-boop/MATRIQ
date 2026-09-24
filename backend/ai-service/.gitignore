@@ -1,0 +1,5 @@
+# Trained Siamese checkpoints (scripts/train_siamese.py). ~90 MB each; train
+# them or unpack a release, never commit them.
+# Evaluation output (scripts/evaluate_search.py). Regenerated on demand.
+data/evaluation/report*.json
+.cache/
